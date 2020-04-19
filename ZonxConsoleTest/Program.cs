@@ -13,18 +13,9 @@ namespace ZonxConsoleTest
             Console.WriteLine("=================Test Install Inf=================\r\n");
 
 
-            var infPath = @"C:\ZonxVirtualDevice\ZonxVirtualDevice.inf";
+            var infPath = @"C:\ZonxVirtualDevice\X64\ZonxVirtualDevice.inf";
 
-            int size = 0;
-            bool success = InstallHinf.SetupCopyOEMInf(infPath, "", OemSourceMediaType.SPOST_NONE, OemCopyStyle.SP_COPY_NEWER, null, 0, ref size, null);
-
-            if (!success)
-            {
-                var errorCode = Marshal.GetLastWin32Error();
-                var errorString = new Win32Exception(errorCode).Message;
-                Console.WriteLine(errorString);
-                Console.ReadLine();
-            }
+            InstallHinf.LoadSysDriver(infPath, "ZonxVirtual", "ZonxVirtual");
 
             Console.WriteLine("Press any key exit program");
             Console.ReadKey();
