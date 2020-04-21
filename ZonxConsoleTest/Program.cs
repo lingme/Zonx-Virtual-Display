@@ -15,9 +15,11 @@ namespace ZonxConsoleTest
 
             var infPath = @"C:\ZonxVirtualDevice\X64\ZonxVirtualDevice.inf";
 
+
             var result = InstallHinf.SetupCopyOEMInf(infPath, null, 0, 0, null, 0, 0, null);
 
             Console.WriteLine(result ? "Successful" : "Error");
+
 
             Console.WriteLine("Press any key exit program");
             Console.ReadKey();
