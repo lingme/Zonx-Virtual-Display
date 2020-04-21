@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -13,30 +14,36 @@ namespace ZonxWinAPI
         SPOST_MAX = 3
     }
 
+    public enum SetupUOInfFlags : uint
+    {
+        NONE = 0x0000,
+        SUOI_FORCEDELETE = 0x0001
+    };
+
     public enum OEMCopyStyle
     {
-        SP_COPY_DELETESOURCE = 0x0000001,   // delete source file on successful copy
-        SP_COPY_REPLACEONLY = 0x0000002,   // copy only if target file already present
-        SP_COPY_NEWER = 0x0000004,   // copy only if source newer than or same as target
+        SP_COPY_DELETESOURCE = 0x0000001,
+        SP_COPY_REPLACEONLY = 0x0000002,
+        SP_COPY_NEWER = 0x0000004,
         SP_COPY_NEWER_OR_SAME = SP_COPY_NEWER,
-        SP_COPY_NOOVERWRITE = 0x0000008,   // copy only if target doesn't exist
-        SP_COPY_NODECOMP = 0x0000010,   // don't decompress source file while copying
-        SP_COPY_LANGUAGEAWARE = 0x0000020,   // don't overwrite file of different language
-        SP_COPY_SOURCE_ABSOLUTE = 0x0000040,   // SourceFile is a full source path
-        SP_COPY_SOURCEPATH_ABSOLUTE = 0x0000080,   // SourcePathRoot is the full path
-        SP_COPY_IN_USE_NEEDS_REBOOT = 0x0000100,   // System needs reboot if file in use
-        SP_COPY_FORCE_IN_USE = 0x0000200,   // Force target-in-use behavior
-        SP_COPY_NOSKIP = 0x0000400,   // Skip is disallowed for this file or section
-        SP_FLAG_CABINETCONTINUATION = 0x0000800,   // Used with need media notification
-        SP_COPY_FORCE_NOOVERWRITE = 0x0001000,   // like NOOVERWRITE but no callback nofitication
-        SP_COPY_FORCE_NEWER = 0x0002000,   // like NEWER but no callback nofitication
-        SP_COPY_WARNIFSKIP = 0x0004000,   // system critical file: warn if user tries to skip
-        SP_COPY_NOBROWSE = 0x0008000,   // Browsing is disallowed for this file or section
-        SP_COPY_NEWER_ONLY = 0x0010000,   // copy only if source file newer than target
-        SP_COPY_SOURCE_SIS_MASTER = 0x0020000,   // source is single-instance store master
-        SP_COPY_OEMINF_CATALOG_ONLY = 0x0040000,   // (SetupCopyOEMInf only) don't copy INF--just catalog
-        SP_COPY_REPLACE_BOOT_FILE = 0x0080000,   // file must be present upon reboot (i.e., it's needed by the loader), this flag implies a reboot
-        SP_COPY_NOPRUNE = 0x0100000   // never prune this file
+        SP_COPY_NOOVERWRITE = 0x0000008,
+        SP_COPY_NODECOMP = 0x0000010,
+        SP_COPY_LANGUAGEAWARE = 0x0000020,
+        SP_COPY_SOURCE_ABSOLUTE = 0x0000040,
+        SP_COPY_SOURCEPATH_ABSOLUTE = 0x0000080,
+        SP_COPY_IN_USE_NEEDS_REBOOT = 0x0000100,
+        SP_COPY_FORCE_IN_USE = 0x0000200,
+        SP_COPY_NOSKIP = 0x0000400,
+        SP_FLAG_CABINETCONTINUATION = 0x0000800,
+        SP_COPY_FORCE_NOOVERWRITE = 0x0001000,
+        SP_COPY_FORCE_NEWER = 0x0002000,
+        SP_COPY_WARNIFSKIP = 0x0004000,
+        SP_COPY_NOBROWSE = 0x0008000,
+        SP_COPY_NEWER_ONLY = 0x0010000,
+        SP_COPY_SOURCE_SIS_MASTER = 0x0020000,
+        SP_COPY_OEMINF_CATALOG_ONLY = 0x0040000,
+        SP_COPY_REPLACE_BOOT_FILE = 0x0080000,
+        SP_COPY_NOPRUNE = 0x0100000
     }
 
     public class InstallHinf
@@ -65,5 +72,33 @@ namespace ZonxWinAPI
             string InfFileName,
             int Flags,
             IntPtr Reserved);
+
+        [DllImport("setupapi.dll", SetLastError = true)]
+        public static extern bool SetupUninstallOEMInf(
+            string InfFileName,
+            SetupUOInfFlags Flags,
+            IntPtr Reserved);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern uint GetWindowsDirectory(StringBuilder lpBuffer,int uSize);
+
+        public static bool UninstallInfByText(string text)
+        {
+            StringBuilder winDir = new StringBuilder(256);
+            if (0 == GetWindowsDirectory(winDir, winDir.Capacity)) return (false);
+            string infDir = winDir.ToString() + "\\inf";
+            string[] infFiles = Directory.GetFiles(infDir, "*.inf");
+            bool retval = true;
+            foreach (string infFile in infFiles)
+            {
+                string inf = File.ReadAllText(infFile);
+                if (inf.Contains(text))
+                {
+                    string infFileName = infFile.Remove(0, infFile.LastIndexOf('\\') + 1);
+                    retval = retval && (SetupUninstallOEMInf(infFileName, SetupUOInfFlags.SUOI_FORCEDELETE, IntPtr.Zero));
+                }
+            }
+            return (retval);
+        }
     }
 }
