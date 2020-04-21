@@ -63,5 +63,26 @@ namespace ZonxWinAPI
             ref int RequiredSize,
             string DestinationInfFileNameComponent
         );
+
+        [DllImport("setupapi.dll")]
+        public static extern bool SetupCopyOEMInf(
+            string SourceInfFileName,
+            string OEMSourceMediaLocation,
+            int OEMSourceMediaType,
+            int CopyStyle,
+            string DestinationInfFileName,
+            int DestinationInfFileNameSize,
+            int RequiredSize,
+            string DestinationInfFileNameComponent
+    );
+
+        [DllImport("newdev.dll")]
+        public static extern bool UpdateDriverForPlugAndPlayDevices(
+            IntPtr hwndParent,
+            string HardwareId,
+            string FullInfPath,
+            uint InstallFlags,
+            bool bRebootRequired
+            );
     }
 }

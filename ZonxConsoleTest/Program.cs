@@ -15,7 +15,10 @@ namespace ZonxConsoleTest
 
             var infPath = @"C:\ZonxVirtualDevice\X64\ZonxVirtualDevice.inf";
 
-            InstallHinf.InstallHinfSection(IntPtr.Zero, IntPtr.Zero, infPath, 0);
+            //InstallHinf.InstallHinfSection(IntPtr.Zero, IntPtr.Zero, infPath, 0);
+
+
+            InstallHinf.SetupCopyOEMInf(infPath, null, 0, 0, null, 0, 0, null);
 
             Console.WriteLine("Press any key exit program");
             Console.ReadKey();
