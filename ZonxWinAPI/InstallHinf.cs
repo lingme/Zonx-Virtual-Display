@@ -52,8 +52,8 @@ namespace ZonxWinAPI
         public static extern bool SetupCopyOEMInf(
             string SourceInfFileName,
             string OEMSourceMediaLocation,
-            OEMSourceMediaType OEMSourceMediaType,
-            OEMCopyStyle CopyStyle,
+            int OEMSourceMediaType,
+            int CopyStyle,
             string DestinationInfFileName,
             int DestinationInfFileNameSize,
             int RequiredSize,
@@ -72,33 +72,5 @@ namespace ZonxWinAPI
             string InfFileName,
             int Flags,
             IntPtr Reserved);
-
-        [DllImport("setupapi.dll", SetLastError = true)]
-        public static extern bool SetupUninstallOEMInf(
-            string InfFileName,
-            SetupUOInfFlags Flags,
-            IntPtr Reserved);
-
-        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern uint GetWindowsDirectory(StringBuilder lpBuffer,int uSize);
-
-        public static bool UninstallInfByText(string text)
-        {
-            StringBuilder winDir = new StringBuilder(256);
-            if (0 == GetWindowsDirectory(winDir, winDir.Capacity)) return (false);
-            string infDir = winDir.ToString() + "\\inf";
-            string[] infFiles = Directory.GetFiles(infDir, "*.inf");
-            bool retval = true;
-            foreach (string infFile in infFiles)
-            {
-                string inf = File.ReadAllText(infFile);
-                if (inf.Contains(text))
-                {
-                    string infFileName = infFile.Remove(0, infFile.LastIndexOf('\\') + 1);
-                    retval = retval && (SetupUninstallOEMInf(infFileName, SetupUOInfFlags.SUOI_FORCEDELETE, IntPtr.Zero));
-                }
-            }
-            return (retval);
-        }
     }
 }

@@ -15,15 +15,9 @@ namespace ZonxConsoleTest
 
             var infPath = @"C:\ZonxVirtualDevice\X64\ZonxVirtualDevice.inf";
 
-            //InstallHinf.InstallHinfSection(IntPtr.Zero, IntPtr.Zero, infPath, 0);
+            var result = InstallHinf.SetupCopyOEMInf(infPath, null, 0, 0, null, 0, 0, null);
 
-
-            InstallHinf.SetupCopyOEMInf(infPath, null, OEMSourceMediaType.SPOST_NONE, OEMCopyStyle.SP_COPY_NOPRUNE, null, 0, 0, null);
-
-            //InstallHinf.SetupUninstallOEMInfA(infPath, 0, IntPtr.Zero);
-
-
-            //InstallHinf.SetupUninstallOEMInf(infPath, SetupUOInfFlags.SUOI_FORCEDELETE, IntPtr.Zero);
+            Console.WriteLine(result ? "Successful" : "Error");
 
             Console.WriteLine("Press any key exit program");
             Console.ReadKey();
