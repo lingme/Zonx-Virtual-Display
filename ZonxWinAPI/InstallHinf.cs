@@ -52,8 +52,8 @@ namespace ZonxWinAPI
         public static extern bool SetupCopyOEMInf(
                 string SourceInfFileName,
                 string OEMSourceMediaLocation,
-                OEMSourceMediaType OEMSourceMediaType,
-                OEMCopyStyle CopyStyle,
+                int OEMSourceMediaType,
+                int CopyStyle,
                 string DestinationInfFileName,
                 int DestinationInfFileNameSize,
                 int RequiredSize,
