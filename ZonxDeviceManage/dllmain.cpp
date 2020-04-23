@@ -9,6 +9,9 @@
 
 using namespace std;
 
+extern "C" __declspec(dllexport) bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, HANDLE* handle);
+extern "C" __declspec(dllexport) bool __stdcall CloseDevice(HANDLE handle);
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
 	switch (ul_reason_for_call)
@@ -29,24 +32,23 @@ CreationCallback(_In_ HSWDEVICE hSwDevice, _In_ HRESULT hrCreateResult, _In_opt_
 	SetEvent(hEvent);
 }
 
-extern "C" __declspec(dllexport) bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, char* nDeviceStation);
-extern "C" __declspec(dllexport) bool __stdcall CloseDevice(int* nDeviceStation);
-
-bool __stdcall CloseDevice(int* nDeviceStation)
+bool __stdcall CloseDevice(HANDLE handle)
 {
-	if (__DeviceList.count(*nDeviceStation) > 0)
+	if (handle && (handle != INVALID_HANDLE_VALUE))
 	{
 		cout << "Test close" << endl;
-
-		SwDeviceClose(__DeviceList[*nDeviceStation]);
+		SwDeviceClose(HSWDEVICE(handle));
 		return true;
 	}
 	return false;
 }
 
-bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, char* nDeviceStation)
+bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, HANDLE* handle)
 {
 	cout << "Test create" << endl;
+	cout << instanceId << endl;
+	cout << deviceDescription << endl;
+
 
 	HANDLE hEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 	HSWDEVICE hSwDevice;
@@ -82,14 +84,23 @@ bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, char* nDe
 	}
 
 	DWORD waitResult = WaitForSingleObject(hEvent, 10 * 1000);
-
 	if (waitResult != WAIT_OBJECT_0)
 	{
 		cout << "Wait for device creation failed" << endl;
 		return false;
 	}
 
-	nDeviceStation = hSwDevice;
+	cout << hSwDevice << endl;
+
+	HANDLE handleTemp = hSwDevice;
+
+	cout << handleTemp << endl;
+
+	handle = &handleTemp;
+
+	cout << handle << endl;
+
+
 
 	return true;
 }
