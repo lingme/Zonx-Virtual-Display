@@ -28,14 +28,15 @@ namespace ZonxConsoleTest
 
             //Console.WriteLine(result ? "Successful" : "Error");
 
-            //int fd = 0;
-            //if (CreateDevice("ZonxVirtualDevice", "Zonx Virtual Device", ref fd))
-            //{
-            //    Console.WriteLine("Press any key close Device");
-            //    Console.ReadKey();
+            int fd = 0;
+            if (CreateDevice("ZonxVirtualDevice", "Zonx Virtual Device", ref fd))
+            {
+                Console.WriteLine("Press any key close Device");
+                Console.ReadKey();
 
-            //    CloseDevice(fd);
-            //}
+                CloseDevice(fd);
+            }
+
 
 
             Console.WriteLine("Press any key exit program");
