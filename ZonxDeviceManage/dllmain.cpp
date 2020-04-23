@@ -75,7 +75,6 @@ bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, char* nDe
 		&hEvent,
 		&hSwDevice);
 
-
 	if (FAILED(hr))
 	{
 		printf("SwDeviceCreate failed with 0x%lx\n", hr);
