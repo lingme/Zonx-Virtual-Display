@@ -9,7 +9,7 @@
 
 using namespace std;
 
-extern "C" __declspec(dllexport) bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, HANDLE* handle);
+extern "C" __declspec(dllexport) bool __stdcall CreateDevice(char* instanceId, char* deviceDescription,OUT HANDLE& handle);
 extern "C" __declspec(dllexport) bool __stdcall CloseDevice(HANDLE handle);
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
@@ -36,20 +36,14 @@ bool __stdcall CloseDevice(HANDLE handle)
 {
 	if (handle && (handle != INVALID_HANDLE_VALUE))
 	{
-		cout << "Test close" << endl;
 		SwDeviceClose(HSWDEVICE(handle));
 		return true;
 	}
 	return false;
 }
 
-bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, HANDLE* handle)
+bool __stdcall CreateDevice(char* instanceId, char* deviceDescription,OUT HANDLE& handle)
 {
-	cout << "Test create" << endl;
-	cout << instanceId << endl;
-	cout << deviceDescription << endl;
-
-
 	HANDLE hEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 	HSWDEVICE hSwDevice;
 	SW_DEVICE_CREATE_INFO createInfo = {};
@@ -90,18 +84,7 @@ bool __stdcall CreateDevice(char* instanceId, char* deviceDescription, HANDLE* h
 		return false;
 	}
 
-	cout << hSwDevice << endl;
-
-	HANDLE handleTemp = hSwDevice;
-
-	cout << handleTemp << endl;
-
-	handle = &handleTemp;
-
-	cout << handle << endl;
-
-
-
+	handle = hSwDevice;
 	return true;
 }
 
