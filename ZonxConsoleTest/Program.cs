@@ -11,7 +11,7 @@ namespace ZonxConsoleTest
     class Program
     {
         [DllImport("ZonxDeviceManage.dll", CharSet = CharSet.Ansi)]
-        public static extern bool CreateDevice(string instanceId, string deviceDescription, ref IntPtr handle);
+        public static extern bool CreateDevice(string instanceId, string deviceDescription, out IntPtr handle);
 
         [DllImport("ZonxDeviceManage.dll", CharSet = CharSet.Ansi)]
         public static extern bool CloseDevice(IntPtr handle);
@@ -25,8 +25,8 @@ namespace ZonxConsoleTest
 
 
             Console.WriteLine("=================Test create device and close device=================\r\n");
-            IntPtr fd = IntPtr.Zero;
-            if (CreateDevice("ZonxVirtualDevice", "Zonx Virtual Device", ref fd))
+            IntPtr fd;
+            if (CreateDevice("ZonxVirtualDevice", "Zonx Virtual Device", out fd))
             {
                 Console.WriteLine($"[C#] Press any key close Device :{fd}");
                 Console.ReadKey();
