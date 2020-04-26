@@ -10,12 +10,6 @@ namespace ZonxWinAPI
         SPOST_MAX = 3
     }
 
-    public enum SetupUOInfFlags : uint
-    {
-        NONE = 0x0000,
-        SUOI_FORCEDELETE = 0x0001
-    };
-
     public enum OEMCopyStyle
     {
         SP_COPY_DELETESOURCE = 0x0000001,
@@ -39,7 +33,8 @@ namespace ZonxWinAPI
         SP_COPY_SOURCE_SIS_MASTER = 0x0020000,
         SP_COPY_OEMINF_CATALOG_ONLY = 0x0040000,
         SP_COPY_REPLACE_BOOT_FILE = 0x0080000,
-        SP_COPY_NOPRUNE = 0x0100000
+        SP_COPY_NOPRUNE = 0x0100000,
+        SP_COPY_NONE = 0x0000000
     }
 
     public class InstallHinf
@@ -48,8 +43,8 @@ namespace ZonxWinAPI
         public static extern bool SetupCopyOEMInf(
                 string SourceInfFileName,
                 string OEMSourceMediaLocation,
-                int OEMSourceMediaType,
-                int CopyStyle,
+                OEMSourceMediaType OEMSourceMediaType,
+                OEMCopyStyle CopyStyle,
                 string DestinationInfFileName,
                 int DestinationInfFileNameSize,
                 int RequiredSize,
