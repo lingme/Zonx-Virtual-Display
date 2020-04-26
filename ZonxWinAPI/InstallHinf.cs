@@ -39,7 +39,9 @@ namespace ZonxWinAPI
 
     public class InstallHinf
     {
-        [DllImport("setupapi.dll")]
+        private const string SetupApiDll = "setupapi.dll";
+
+        [DllImport(SetupApiDll)]
         public static extern bool SetupCopyOEMInf(
                 string SourceInfFileName,
                 string OEMSourceMediaLocation,
