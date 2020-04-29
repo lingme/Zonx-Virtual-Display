@@ -48,8 +48,8 @@ bool __stdcall CreateDevice(char* instanceId, char* deviceDescription,OUT HANDLE
 	HSWDEVICE hSwDevice;
 	SW_DEVICE_CREATE_INFO createInfo = {};
 
-	wchar_t instanceId_t[100];
-	wchar_t deviceDescription_t[100];
+	wchar_t instanceId_t[100]{};
+	wchar_t deviceDescription_t[100]{};
 
 	mbstowcs(instanceId_t, instanceId, strlen(instanceId) + 1);
 	mbstowcs(deviceDescription_t, deviceDescription, strlen(deviceDescription) + 1);
